@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ChannelType {
+  direct
+  group
+}
+
+enum MessageStatus {
+  draft
+  sent
+  failed
+}
+
+enum PresenceStatus {
+  online
+  offline
+}
+
+model User {
+  id         String        @id @default(uuid())
+  name       String
+  createdAt  DateTime      @default(now())
+  memberships Membership[]
+  messages   Message[]
+  presence   UserPresence?
+}
+
+model Channel {
+  id          String        @id @default(uuid())
+  type        ChannelType
+  createdAt   DateTime      @default(now())
+  memberships Membership[]
+  messages    Message[]
+}
+
+model Membership {
+  userId    String
+  channelId String
+  joinedAt  DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  channel   Channel  @relation(fields: [channelId], references: [id])
+
+  @@id([userId, channelId])
+  @@index([channelId])
+}
+
+model Message {
+  id              String        @id @default(uuid())
+  channelId       String
+  senderId        String
+  body            String        @db.VarChar(1000)
+  createdAt       DateTime      @default(now())
+  seq             Int
+  status          MessageStatus @default(sent)
+  clientMessageId String
+
+  channel Channel @relation(fields: [channelId], references: [id])
+  sender  User    @relation(fields: [senderId], references: [id])
+
+  @@unique([channelId, seq])
+  @@unique([channelId, clientMessageId])
+  @@index([channelId, createdAt])
+}
+
+model UserPresence {
+  userId      String         @id
+  status      PresenceStatus @default(offline)
+  lastEventAt DateTime       @default(now())
+  user        User           @relation(fields: [userId], references: [id])
+}
