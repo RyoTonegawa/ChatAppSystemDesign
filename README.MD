@@ -9,4 +9,6 @@
 - frontend: NextJS
 - backend: NestJS
 - EventBus: Kafka KRaftモードで利用。
+- RDB: PostgreSQL
+- KVS: Redis
 
