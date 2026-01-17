@@ -34,5 +34,17 @@ services:
     ports:
       - "9092:9092"
 
+  presence-redis:
+    image: redis:7.4
+    container_name: chat-presence-redis
+    ports:
+      - "6379:6379"
+
+  chat-redis:
+    image: redis:7.4
+    container_name: chat-chat-redis
+    ports:
+      - "6380:6379"
+
 volumes:
   pgdata:
