@@ -29,6 +29,7 @@ export default function Home() {
   const [memberIds, setMemberIds] = useState("user-01,user-02");
   const [channels, setChannels] = useState<string[]>([]);
   const [activeChannel, setActiveChannel] = useState<string | null>(null);
+  const [joinChannelId, setJoinChannelId] = useState("");
   const [messageBody, setMessageBody] = useState("");
   const [presence, setPresence] = useState<Record<string, string>>({});
   const [messages, setMessages] = useState<Record<string, MessageItem[]>>({});
@@ -225,6 +226,27 @@ export default function Home() {
                 チャネルを作成
               </button>
             </div>
+
+            <div className="mt-4 space-y-3 rounded-2xl border border-black/10 bg-white/80 p-4">
+              <label className="text-xs uppercase tracking-[0.32em] text-[color:var(--muted)]">
+                既存チャネルに参加
+              </label>
+              <input
+                value={joinChannelId}
+                onChange={(event) => setJoinChannelId(event.target.value)}
+                className="w-full rounded-2xl border border-black/15 bg-white px-3 py-2 text-sm text-black placeholder:text-black/40"
+                placeholder="channelId を入力"
+              />
+              <button
+                onClick={() => handleJoinChannel(joinChannelId.trim())}
+                className="w-full rounded-2xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-black"
+              >
+                参加する
+              </button>
+              <p className="text-xs text-[color:var(--muted)]">
+                スマホから参加する場合も、このIDを入力してください。
+              </p>
+            </div>
           </aside>
 
           <main className="stagger relative flex min-h-[520px] flex-col rounded-3xl border border-black/15 bg-[color:var(--surface)] p-6 shadow-[0_25px_60px_-45px_rgba(0,0,0,0.25)]">
@@ -260,7 +282,7 @@ export default function Home() {
               )}
             </div>
 
-            <div className="mt-4 flex items-center gap-3">
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
               <input
                 value={messageBody}
                 onChange={(event) => setMessageBody(event.target.value)}
@@ -269,7 +291,7 @@ export default function Home() {
               />
               <button
                 onClick={handleSendMessage}
-                className="rounded-2xl bg-[color:var(--accent)] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_28px_-18px_rgba(0,0,0,0.6)]"
+                className="w-full rounded-2xl bg-[color:var(--accent)] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_28px_-18px_rgba(0,0,0,0.6)] sm:w-auto"
               >
                 送信
               </button>
