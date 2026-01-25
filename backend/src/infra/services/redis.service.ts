@@ -11,6 +11,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     const chatUrl = process.env.CHAT_REDIS_URL || 'redis://localhost:6380/0';
     this.presenceClient = new Redis(presenceUrl);
     this.chatClient = new Redis(chatUrl);
+    this.presenceClient.on('error', (error) => {
+      console.error('[presence-redis] connection error', error.message);
+    });
+    this.chatClient.on('error', (error) => {
+      console.error('[chat-redis] connection error', error.message);
+    });
   }
 
   onModuleDestroy() {

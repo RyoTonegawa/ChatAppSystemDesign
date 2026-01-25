@@ -1,5 +1,5 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { Kafka, Producer } from 'kafkajs';
+import { Kafka, Partitioners, Producer } from 'kafkajs';
 
 @Injectable()
 export class KafkaBus implements OnModuleInit, OnModuleDestroy {
@@ -8,7 +8,9 @@ export class KafkaBus implements OnModuleInit, OnModuleDestroy {
   async onModuleInit() {
     const brokers = (process.env.KAFKA_BROKERS || 'localhost:9092').split(',');
     const kafka = new Kafka({ clientId: 'chat-service', brokers });
-    this.producer = kafka.producer();
+    this.producer = kafka.producer({
+      createPartitioner: Partitioners.LegacyPartitioner
+    });
     await this.producer.connect();
   }
 
